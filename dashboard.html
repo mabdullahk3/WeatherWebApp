@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard and Table</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- side menu -->
+    <div class="side-menu">
+        <div class="logo">
+            <img src="images/weather.png" alt="weather-app">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#main-page">Dashboard</a></li>
+                <li><a href="#table-section">Table</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- main page -->
+    <div class="main-page" id="main-page">
+        <!-- search bar -->
+        <div class="search-bar">
+            <input type="text" id="city" placeholder="Enter city name">
+            <button id="search-btn">Search</button>
+        </div>
+
+        <!-- dashboard section -->
+        <div id="dashboard-section">
+            <!-- weather widget -->
+            <div class="weather-widget">
+                <div id="weather-data" class="weather-widget-container"></div>
+            </div>
+
+            <!-- charts -->
+            <div class="charts-container">
+                <!-- vertical bar chart -->
+                <div class="chart-item">
+                    <canvas id="BarChart"></canvas>
+                </div>
+                <!-- doughnut chart -->
+                <div class="chart-item">
+                    <canvas id="DoughnutChart"></canvas>
+                </div>
+                <!-- line chart -->
+                <div class="chart-item">
+                    <canvas id="tempLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- table section -->
+        <div id="table-section">
+
+            <div class="controls">
+                <button id="sort-asc">Sort Ascending</button>
+                <button id="sort-desc">Sort Descending</button>
+                <button id="filter-rainy">Show Rainy Days</button>
+                <button id="filter-highest">Show Highest Temperature</button>
+                <button id="reset">Reset</button>
+            </div>
+            <br/>
+            <!-- weather forecast table -->
+            <div class="table">
+                <table id="weather-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Temperature (°C)</th>
+                            <th>Humidity (%)</th>
+                            <th>Condition</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div class="pagination">
+                    <button id="prev-btn">Previous</button>
+                    <span id="page-info">Page 1</span>
+                    <button id="next-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <!-- Chatbot button -->
+    <button class="chatbot-button" id="chatbot-toggle">
+        <img src="images/chatbot.png" alt="Chatbot Icon"> <!-- Replace with your icon path -->
+    </button>
+
+    <!-- Chatbot container -->
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <span>WeatherBot</span>
+        </div>
+        <div id="chatbot-response" class="chatbot-body">
+            <div class="message bot">Hi! How are you doing?</div>
+        </div>
+        <div id="chatbot-bar" class="chatbot-input">
+            <input type="text" id="user-input" placeholder="Ask something...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
