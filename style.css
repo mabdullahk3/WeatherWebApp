@@ -65,6 +65,7 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 #city {
@@ -106,8 +107,7 @@ body {
     text-align: left;
     margin-bottom: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    max-height: 300px;
+    max-width:  100%;
     margin: 0 auto; 
     font-family: Arial, sans-serif;
 }
@@ -148,6 +148,9 @@ body {
 .charts-buttons-container {
     text-align: center;
     margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .chart-btn {
@@ -212,6 +215,7 @@ canvas {
     align-items: center;
     justify-content: center;
     gap:10px;
+    flex-wrap: wrap;
 }
 
 .controls button {
@@ -230,12 +234,15 @@ canvas {
 .table {
     margin-bottom: 20px;
     text-align: center;
+    overflow-x: auto; 
+    width: 100%;
 }
 
 #weather-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    overflow-x: auto;
 }
 
 #weather-table th, #weather-table td {
@@ -372,4 +379,80 @@ canvas {
 #send-btn:hover {
     background-color: lightyellow;
     color: black;
+}
+
+@media (max-width: 768px) {
+    .side-menu {
+        display: none; 
+    }
+
+    .main-page {
+        margin-left: 0;
+        width: 100vw;
+    }
+
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .weather-widget {
+        max-width: 90%;
+    }
+
+    .pagination button {
+        font-size: 12px; 
+        padding: 8px;     
+        width: 70px;      
+    }
+
+    .pagination span {
+        font-size: 14px;  
+    }
+
+    .chart-btn {
+        margin: 5px 0;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .side-menu {
+        display: none; 
+    }
+
+    .main-page {
+        margin-left: 0;
+        width: 100vw;
+    }
+
+    #city {
+        width: 100%;
+        margin: 0 0 10px;
+    }
+
+    #search-btn {
+        width: 100%;
+    }
+
+    .weather-widget {
+        padding: 10px;
+    }
+
+    .pagination button {
+        width: 60px;
+        padding: 6px; 
+        width: 60px;  
+    }
+
+    .pagination span {
+        font-size: 12px; 
+    }
+
+    .chatbot-container {
+        width: 100%;
+        margin-right: 0;
+    }
 }
