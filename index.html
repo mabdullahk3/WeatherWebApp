@@ -36,21 +36,22 @@
                 <div id="weather-data" class="weather-widget-container"></div>
             </div>
 
-            <!-- charts -->
-            <div class="charts-container">
-                <!-- vertical bar chart -->
-                <div class="chart-item">
-                    <canvas id="BarChart"></canvas>
-                </div>
-                <!-- doughnut chart -->
-                <div class="chart-item">
-                    <canvas id="DoughnutChart"></canvas>
-                </div>
-                <!-- line chart -->
-                <div class="chart-item">
-                    <canvas id="tempLineChart"></canvas>
-                </div>
+            <!-- charts section -->
+            <div class="charts-buttons-container">
+                <!-- Buttons to select chart -->
+                <button class="chart-btn" onclick="showChart('BarChart')">Bar Chart</button>
+                <button class="chart-btn" onclick="showChart('DoughnutChart')">Doughnut Chart</button>
+                <button class="chart-btn" onclick="showChart('tempLineChart')">Line Chart</button>
             </div>
+            
+            <div id="chartModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeChart()">&times;</span>
+                    <canvas id="BarChartCanvas" style="display:none;"></canvas>
+                    <canvas id="DoughnutChartCanvas" style="display:none;"></canvas>
+                    <canvas id="TempLineChartCanvas" style="display:none;"></canvas>
+                </div>
+            </div>            
         </div>
 
         <!-- table section -->
@@ -83,27 +84,30 @@
                     <button id="next-btn">Next</button>
                 </div>
             </div>
-        </div>
-    </div>
-    <br>
-    <!-- Chatbot button-->
-    <button class="chatbot-button" id="chatbot-toggle">
-        <img src="images/chatbot.png" alt="Chatbot Icon"> 
-    </button> 
 
-    <!-- Chatbot container -->
-    <div class="chatbot-container">
-        <div class="chatbot-header">
-            <span>WeatherBot</span>
-        </div>
-        <div id="chatbot-response" class="chatbot-body">
-            <div class="message bot">Hi! How are you doing?</div>
-        </div>
-        <div id="chatbot-bar" class="chatbot-input">
-            <input type="text" id="user-input" placeholder="Ask something...">
-            <button id="send-btn">Send</button>
+            <!-- Chatbot button-->
+            <div class="chatbot">
+                <button class="chatbot-button" id="chatbot-toggle">
+                    <img src="images/chatbot.png" alt="Chatbot Icon"> 
+                </button> 
+    
+                <!-- Chatbot container -->
+                <div class="chatbot-container">
+                    <div class="chatbot-header">
+                        <span>WeatherBot</span>
+                    </div>
+                    <div id="chatbot-response" class="chatbot-body">
+                        <div class="message bot">Hi! How are you doing?</div>
+                    </div>
+                    <div id="chatbot-bar" class="chatbot-input">
+                        <input type="text" id="user-input" placeholder="Ask something...">
+                        <button id="send-btn">Send</button>
+                    </div>
+                </div>
+            </div><br>
         </div>
     </div>
+    
 
     <script src="script.js"></script>
 </body>

@@ -73,8 +73,7 @@ function displayForecast() {
         return;
     }
 
-    tableBody.innerHTML = '';  // Clear previous table data
-
+    tableBody.innerHTML = '';  
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
 
@@ -91,7 +90,7 @@ function displayForecast() {
                 <td>${forecast.weather[0].description}</td>
             </tr>
         `;
-        tableBody.innerHTML += forecastRow;  // Append rows
+        tableBody.innerHTML += forecastRow;  
     });
 }
 
@@ -196,7 +195,7 @@ function displayFilteredForecast(filteredData) {
         return;
     }
 
-    tableBody.innerHTML = ''; // Clear previous table data
+    tableBody.innerHTML = ''; 
 
     filteredData.forEach(forecast => {
         const date = new Date(forecast.dt_txt);
@@ -211,61 +210,13 @@ function displayFilteredForecast(filteredData) {
                 <td>${forecast.weather[0].description}</td>
             </tr>
         `;
-        tableBody.innerHTML += forecastRow; // Append rows
+        tableBody.innerHTML += forecastRow; 
     });
 }
 
-function updateCharts(forecastData) {
-    const labels = [];  // To store date/times
-    const temperatureData = [];  // To store temperature values
-
-    // Loop through forecastData to prepare chart data
-    forecastData.forEach(forecast => {
-        const date = new Date(forecast.dt_txt);
-        const formattedDate = date.toLocaleDateString();
-
-        // Add date labels
-        labels.push(formattedDate);
-
-        // Add temperature data for Bar Chart and Line Chart
-        temperatureData.push(forecast.main.temp);
-    });
-
-    // Update Bar Chart with temperature data
-    barChart.data.labels = labels;
-    barChart.data.datasets[0].data = temperatureData; // Set temperature data
-    barChart.update();
-
-    // Update Line Chart with temperature data
-    tempLineChart.data.labels = labels;
-    tempLineChart.data.datasets[0].data = temperatureData; // Set temperature data
-    tempLineChart.update();
-
-    // Prepare data for Doughnut Chart
-    const conditionCounts = {};  // To store weather condition counts for Doughnut chart
-    forecastData.forEach(forecast => {
-        const condition = forecast.weather[0].main;
-        if (conditionCounts[condition]) {
-            conditionCounts[condition]++;
-        } else {
-            conditionCounts[condition] = 1;
-        }
-    });
-
-    // Update Doughnut Chart with weather condition data
-    const conditionLabels = Object.keys(conditionCounts);
-    const conditionData = Object.values(conditionCounts);
-    doughnutChart.data.labels = conditionLabels;
-    doughnutChart.data.datasets[0].data = conditionData;
-    doughnutChart.update();
-}
-
+// Function to initialize the charts
 function initializeCharts() {
-    const barCtx = document.getElementById('BarChart').getContext('2d');
-    const doughnutCtx = document.getElementById('DoughnutChart').getContext('2d');
-    const lineCtx = document.getElementById('tempLineChart').getContext('2d');
-
-    // Initialize Bar Chart
+    const barCtx = document.getElementById('BarChartCanvas').getContext('2d');
     barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
@@ -280,39 +231,28 @@ function initializeCharts() {
         },
         options: {
             scales: {
-                y: {
-                    beginAtZero: true
-                }
+                y: { beginAtZero: true }
             }
         }
     });
 
-    // Initialize Doughnut Chart
+    // Doughnut Chart configuration
+    const doughnutCtx = document.getElementById('DoughnutChartCanvas').getContext('2d');
     doughnutChart = new Chart(doughnutCtx, {
         type: 'doughnut',
         data: {
             labels: [],
             datasets: [{
-                label: 'Weather Conditions',
-                data: [],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                ],
-                borderWidth: 1
+                label: 'Weather Condition',
+                data: [0,0],
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                hoverOffset: 4
             }]
         }
     });
 
-    // Initialize Line Chart
+    // Line Chart configuration
+    const lineCtx = document.getElementById('TempLineChartCanvas').getContext('2d');
     tempLineChart = new Chart(lineCtx, {
         type: 'line',
         data: {
@@ -321,18 +261,79 @@ function initializeCharts() {
                 label: 'Temperature (°C)',
                 data: [],
                 fill: false,
-                borderColor: 'rgba(255, 159, 64, 1)',
+                borderColor: 'rgba(255, 99, 132, 1)',
                 tension: 0.1
             }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
         }
     });
+}
+
+// Update charts with forecast data
+function updateCharts(forecastData) {
+    const labels = forecastData.map(forecast => new Date(forecast.dt_txt).toLocaleString());
+    const temperatures = forecastData.map(forecast => forecast.main.temp);
+    
+    // Update bar chart
+    barChart.data.labels = labels;
+    barChart.data.datasets[0].data = temperatures;
+    barChart.update();
+
+    // Update doughnut chart
+    const weatherConditions = forecastData.map(forecast => forecast.weather[0].main);
+    const clearCount = weatherConditions.filter(condition => condition.toLowerCase() === 'clear').length;
+    const rainCount = weatherConditions.filter(condition => condition.toLowerCase() === 'rain').length;
+
+    doughnutChart.data.labels = ['Clear', 'Rain'];
+    doughnutChart.data.datasets[0].data = [clearCount, rainCount];
+    doughnutChart.update();
+
+    // Update line chart
+    tempLineChart.data.labels = labels;
+    tempLineChart.data.datasets[0].data = temperatures;
+    tempLineChart.update();
+}
+
+// Function to show a chart in the modal
+function showChart(chartType) {
+    const modal = document.getElementById('chartModal');
+    const barCanvas = document.getElementById('BarChartCanvas');
+    const doughnutCanvas = document.getElementById('DoughnutChartCanvas');
+    const lineCanvas = document.getElementById('TempLineChartCanvas');
+
+    // Show the modal
+    modal.style.display = 'block'; 
+
+    // Clear all canvases
+    barCanvas.style.display = 'none';
+    doughnutCanvas.style.display = 'none';
+    lineCanvas.style.display = 'none';
+
+    // Display the selected chart
+    if (chartType === 'BarChart') {
+        barCanvas.style.display = 'block'; 
+        barChart.data.labels = forecastData.map(forecast => new Date(forecast.dt_txt).toLocaleDateString());
+        barChart.data.datasets[0].data = forecastData.map(forecast => forecast.main.temp);
+        barChart.update();
+    } else if (chartType === 'DoughnutChart') {
+        doughnutCanvas.style.display = 'block'; 
+        doughnutChart.data.labels = ['Clear', 'Rain'];
+        const weatherConditions = forecastData.map(forecast => forecast.weather[0].main);
+        const clearCount = weatherConditions.filter(condition => condition.toLowerCase() === 'clear').length;
+        const rainCount = weatherConditions.filter(condition => condition.toLowerCase() === 'rain').length;
+        doughnutChart.data.datasets[0].data = [clearCount, rainCount];
+        doughnutChart.update();
+    } else if (chartType === 'tempLineChart') {
+        lineCanvas.style.display = 'block'; 
+        tempLineChart.data.labels = forecastData.map(forecast => new Date(forecast.dt_txt).toLocaleDateString());
+        tempLineChart.data.datasets[0].data = forecastData.map(forecast => forecast.main.temp);
+        tempLineChart.update();
+    }
+}
+
+// Close chart modal
+function closeChart() {
+    const modal = document.getElementById('chartModal');
+    modal.style.display = 'none';
 }
 
 // Initialize everything when the document is ready
@@ -342,10 +343,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeCharts(); 
 });
 
-// Event listener for the form submission
-// Event listener for the search button click
 document.getElementById('search-btn').addEventListener('click', function () {
-    const cityInput = document.getElementById('city').value; // Use the correct input ID
+    const cityInput = document.getElementById('city').value;
     if (cityInput) {
         fetchWeather(cityInput);
         fetchWeatherForecast(cityInput);
@@ -357,4 +356,38 @@ document.getElementById('search-btn').addEventListener('click', function () {
 document.getElementById('chatbot-toggle').addEventListener('click', function() {
     const chatbotContainer = document.querySelector('.chatbot-container');
     chatbotContainer.style.display = chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '' ? 'block' : 'none';
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('send-btn').addEventListener('click', function() {
+        const userInput = document.getElementById('user-input').value.trim();
+        const chatBody = document.getElementById('chatbot-response');
+
+        if (userInput) {
+            // Add the user's message to the chat window
+            chatBody.innerHTML += `<div class="message user" style="color:white">${userInput}</div>`;
+
+            // Clear the input field
+            document.getElementById('user-input').value = '';
+
+            // Generate a response from the bot
+            const botResponse = generateBotResponse(userInput);
+
+            // Add the bot's response to the chat window
+            chatBody.innerHTML += `<div class="message bot">${botResponse}</div>`;
+
+            // Scroll to the latest message
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    });
+
+    function generateBotResponse(userInput) {
+        if (userInput.toLowerCase().includes('hello')) {
+            return 'Hello! How can I assist you today?';
+        } else if (userInput.toLowerCase().includes('temperature')) {
+            return 'Please specify the day for the temperature details.';
+        } else {
+            return 'Sorry, I did not understand that. Can you rephrase?';
+        }
+    }
 });
