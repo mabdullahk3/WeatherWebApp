@@ -207,7 +207,11 @@ canvas {
 
 /* Table Page */
 .controls{
-    margin-left: 100px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
 }
 
 .controls button {

@@ -382,11 +382,20 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function generateBotResponse(userInput) {
+        const temperatures = originalForecastData.map(forecast => forecast.main.temp);
+
         if (userInput.toLowerCase().includes('hello')) {
             return 'Hello! How can I assist you today?';
-        } else if (userInput.toLowerCase().includes('temperature')) {
-            return 'Please specify the day for the temperature details.';
-        } else {
+        } else if (userInput.toLowerCase().includes('highest temperature')) {
+            return `The highest temprature in the next 5 days will be: ${Math.max(...temperatures)} °C.`;
+        } else if (userInput.toLowerCase().includes('lowest temperature')) {
+           return `The lowest temprature in the next 5 days will be: ${Math.min(...temperatures)} °C.`
+        } else if (userInput.toLowerCase().includes('average temperature')) {
+           return `The average temprature in the next 5 days will be: ${(temperatures.reduce((sum, temp) => sum + temp, 0)/ temperatures.length).toFixed(2)} °C.`
+        } else if (userInput.toLowerCase().includes('current temperature')) {
+             return `The current temprature is: ${temperatures[0]} °C.`
+        }  
+        else {
             return 'Sorry, I did not understand that. Can you rephrase?';
         }
     }
