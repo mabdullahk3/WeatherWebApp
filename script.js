@@ -9,19 +9,29 @@ let originalForecastData = [];
 // Fetch current weather data
 function fetchWeather(city) {
     const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    fetch(apiURL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('City not found.');
-            }
+    
+    const spinner = document.getElementById('loading-spinner');
+    spinner.style.display = 'block';
+
+    const timeoutPromise = new Promise((resolve) => {
+        setTimeout(resolve, 1000); 
+    });
+    Promise.all([
+        fetch(apiURL).then(response => {
+            if (!response.ok) throw new Error('City not found.');
             return response.json();
-        })
-        .then(data => {
-            displayWeatherDashboard(data);
-        })
-        .catch(error => {
-            alert(error.message);
-        });
+        }),
+        timeoutPromise  
+    ])
+    .then(([data]) => {
+        displayWeatherDashboard(data);
+    })
+    .catch(error => {
+        alert(error.message);
+    })
+    .finally(() => {
+        spinner.style.display = 'none';  
+    });
 }
 
 // --- Display Weather on the Dashboard ---
